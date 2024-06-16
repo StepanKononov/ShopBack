@@ -6,7 +6,6 @@ import amqp from 'amqplib';
 import { User } from '../entities/User';
 
 class UserController {
-    private static secretKey = 'super_secret_key';
 
     static async signUp(req: Request, res: Response) {
         try {
@@ -31,7 +30,7 @@ class UserController {
             if (!isPasswordValid) {
                 throw new Error('Invalid password');
             }
-            const token = jwt.sign({ userId: user.id }, this.secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user.id },'super_secret_key', { expiresIn: '1h' });
             res.status(200).json({ token });
         } catch (error: any) {
             res.status(400).json({ message: error.message });
@@ -40,7 +39,7 @@ class UserController {
 
     static verifyToken(token: string) {
         try {
-            return jwt.verify(token, this.secretKey);
+            return jwt.verify(token,'super_secret_key');
         } catch (error) {
             throw new Error('Invalid token');
         }
